@@ -8,7 +8,7 @@ public enum ApplicationPasteboard {
         guard AXIsProcessTrusted() else {
             let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
             _ = AXIsProcessTrustedWithOptions(options)
-            completion("시스템 설정 → 개인정보 보호 및 보안 → 손쉬운 사용에서 Whisper Paste를 허용한 뒤 다시 시도하세요. 텍스트는 미리보기에 남아 있습니다.")
+            completion("시스템 설정 → 개인정보 보호 및 보안 → 손쉬운 사용에서 ron를 허용한 뒤 다시 시도하세요. 텍스트는 미리보기에 남아 있습니다.")
             return
         }
         guard !target.isTerminated, target.processIdentifier != ProcessInfo.processInfo.processIdentifier else {

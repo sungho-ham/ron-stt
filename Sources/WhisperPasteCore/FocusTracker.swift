@@ -48,11 +48,9 @@ public final class FocusTracker {
     deinit { stop() }
 
     public var label: String {
-        guard let app = selection.application else { return AppText("입력 대상 · 자동 추적\n입력할 창을 선택하세요.").text }
-        let detail = selection.destination.map {
-            [$0.displayWindowTitle, $0.displayInputTitle].filter { !$0.isEmpty }.joined(separator: " · ")
-        } ?? note
-        return AppText("입력 대상 · 자동 추적 · {0}\n{1}", .literal(app.appName), .literal(detail)).text
+        guard let app = selection.application else { return AppText("입력 대상\n입력할 창을 선택하세요.").text }
+        let detail = selection.destination?.displayDetail ?? note
+        return AppText("입력 대상 · {0}\n{1}", .literal(app.appName), .literal(detail)).text
     }
 
     /// Called on the main thread. Activation events update the app immediately;

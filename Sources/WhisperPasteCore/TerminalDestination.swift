@@ -52,6 +52,24 @@ public struct TerminalDestination: Codable, Equatable {
         kind == .application ? AppText("현재 입력칸").text : terminalTitle
     }
 
+    public var displayDetail: String {
+        // Window and session titles can be sampled on different spinner frames.
+        // Use the selected input's title so this never alternates between one
+        // title and two nearly identical titles as a terminal updates them.
+        if kind != .application {
+            for value in [terminalTitle, displayWindowTitle] {
+                let title = value.split(whereSeparator: { $0.isWhitespace }).joined(separator: " ")
+                if !title.isEmpty { return title }
+            }
+        }
+        var titles: [String] = []
+        for value in [displayWindowTitle, displayInputTitle] {
+            let title = value.split(whereSeparator: { $0.isWhitespace }).joined(separator: " ")
+            if !title.isEmpty && !titles.contains(title) { titles.append(title) }
+        }
+        return titles.joined(separator: " · ")
+    }
+
     public func needsClipboard(for text: String) -> Bool {
         kind == .application || kind == .terminal ||
             (kind == .iterm2 && text.contains(where: { $0.isNewline || $0 == "\t" }))
@@ -72,7 +90,7 @@ public enum TerminalBridgeError: AppLocalizedError {
     public var message: AppText {
         switch self {
         case .unavailable: return "입력 앱을 찾을 수 없습니다. 입력할 창을 선택한 뒤 다시 전송하세요."
-        case .permission: return "시스템 설정 → 개인정보 보호 및 보안 → 자동화에서 Whisper Paste의 대상 앱 제어를 허용하세요."
+        case .permission: return "시스템 설정 → 개인정보 보호 및 보안 → 자동화에서 ron의 대상 앱 제어를 허용하세요."
         case .missingTarget: return "입력할 창이나 탭이 바뀌었거나 없어졌습니다. 내용을 보존했습니다. 원하는 입력창을 선택한 뒤 다시 전송하세요."
         case .failed: return "터미널 연동에 실패했습니다. 자동화 권한과 터미널 버전을 확인하세요. 재전송 전 대상 입력창을 확인하세요."
         case .timedOut: return "터미널 응답 시간이 초과되었습니다. 이미 입력되었을 수 있으므로 대상 입력창을 확인한 뒤 다시 시도하세요."

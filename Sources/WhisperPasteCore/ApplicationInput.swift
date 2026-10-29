@@ -66,7 +66,7 @@ public final class ApplicationInput {
         case accessibility, noInput
         public var message: AppText {
             switch self {
-            case .accessibility: return "손쉬운 사용 권한이 필요합니다. 시스템 설정에서 Whisper Paste를 허용한 뒤 입력할 곳을 클릭하고 다시 전송하세요."
+            case .accessibility: return "손쉬운 사용 권한이 필요합니다. 시스템 설정에서 ron를 허용한 뒤 입력할 곳을 클릭하고 다시 전송하세요."
             case .noInput: return "현재 입력칸을 확인할 수 없습니다. 입력할 곳을 클릭한 뒤 다시 전송하거나 ‘복사’를 사용하세요."
             }
         }

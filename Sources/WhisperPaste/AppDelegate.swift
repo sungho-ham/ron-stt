@@ -100,7 +100,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
             NSApp.terminate(nil); return
         }
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        statusItem.button?.image = NSImage(systemSymbolName: "waveform", accessibilityDescription: "Whisper Paste")
+        statusItem.button?.image = NSImage(systemSymbolName: "waveform", accessibilityDescription: "ron")
         let menu = NSMenu(); menu.delegate = self; statusItem.menu = menu
         UserDefaults.standard.removeObject(forKey: "inputConnection")
         buildPanel()
@@ -143,7 +143,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         // Clicking the preview uses normal app activation. Activating the paste
         // destination can then release keyboard focus without hiding this panel.
         // Merely showing it with orderFrontRegardless() still does not make it key.
-        panel.title = "Whisper Paste"
+        panel.title = "ron"
         panel.level = alwaysOnTop ? .floating : .normal
         panel.hidesOnDeactivate = false
         panel.isReleasedWhenClosed = false; panel.delegate = self
@@ -297,7 +297,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         add(menu, "모델 폴더 열기", #selector(openModels))
         add(menu, "사용 튜토리얼", #selector(openTutorial))
         menu.addItem(.separator())
-        add(menu, "Whisper Paste 종료", #selector(quit))
+        add(menu, "ron 종료", #selector(quit))
     }
 
     @discardableResult private func add(_ menu: NSMenu, _ title: AppText, _ action: Selector,
@@ -512,7 +512,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
     private func refreshStatus() {
         let message = statusMessage.text
         statusLabel.stringValue = message
-        statusItem.button?.toolTip = "Whisper Paste · \(message.components(separatedBy: "\n").first ?? "")"
+        statusItem.button?.toolTip = "ron · \(message.components(separatedBy: "\n").first ?? "")"
     }
 
     private func showError(_ message: AppText) {
@@ -530,12 +530,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         cancelButton.isEnabled = phase != .pasting
         textView.isEditable = phase == .ready && !delivery.isPending
         if delivery.isPending, let destination = sendingDestination {
-            destinationLabel.stringValue = AppText("전송 대상 확정 · {0}\n{1} · {2}", .literal(destination.appName), .literal(destination.displayWindowTitle), .literal(destination.displayInputTitle)).text
+            destinationLabel.stringValue = AppText("전송 대상 확정 · {0}\n{1}", .literal(destination.appName), .literal(destination.displayDetail)).text
         } else if delivery.isPending {
             destinationLabel.stringValue = AppText("전송할 입력 대상을 확인하고 있습니다…").text
         } else { destinationLabel.stringValue = focusTracker.label }
         let symbol = phase == .recording ? "record.circle" : (phase == .finalizing ? "ellipsis.circle" : "waveform")
-        statusItem.button?.image = NSImage(systemSymbolName: symbol, accessibilityDescription: "Whisper Paste")
+        statusItem.button?.image = NSImage(systemSymbolName: symbol, accessibilityDescription: "ron")
         statusItem.button?.contentTintColor = phase == .recording ? .systemRed : nil
     }
 

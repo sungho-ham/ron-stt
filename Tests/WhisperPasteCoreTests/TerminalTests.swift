@@ -68,6 +68,42 @@ final class TerminalTests: XCTestCase {
         XCTAssertTrue(first.isSameInput(as: other))
     }
 
+    func testDisplayDetailShowsIdenticalWindowAndSessionTitlesOnlyOnce() throws {
+        var target = try destination()
+        target.windowTitle = "작업 이름 | ron"
+        target.terminalTitle = "작업 이름 | ron"
+        XCTAssertEqual(target.displayDetail, "작업 이름 | ron")
+        target.terminalTitle = "  작업 이름\t| ron\n"
+        XCTAssertEqual(target.displayDetail, "작업 이름 | ron")
+        // Formatting never changes the actual target metadata or identity.
+        XCTAssertEqual(target.terminalTitle, "  작업 이름\t| ron\n")
+        XCTAssertEqual(target.terminalID, "split-a")
+    }
+
+    func testDisplayDetailPrefersSelectedInputAndFallsBackToWindowTitle() throws {
+        var target = try destination()
+        target.windowTitle = "work"
+        target.terminalTitle = "Codex"
+        XCTAssertEqual(target.displayDetail, "Codex")
+        target.terminalTitle = " \n\t"
+        XCTAssertEqual(target.displayDetail, "work")
+        target.windowTitle = ""
+        XCTAssertEqual(target.displayDetail, AppText("현재 창").text)
+    }
+
+    func testTerminalDisplayStaysSingleWhileWindowAndSessionTitlesUpdateSeparately() throws {
+        for kind in [TerminalKind.ghostty, .iterm2, .terminal] {
+            var target = try destination()
+            target.kind = kind
+            target.terminalTitle = "⠋ 작업 이름 | ron-stt"
+            for windowTitle in [target.terminalTitle, "⠇ 작업 이름 | ron-stt", "다른 분할 영역"] {
+                target.windowTitle = windowTitle
+                XCTAssertEqual(target.displayDetail, target.terminalTitle)
+                XCTAssertEqual(target.terminalID, "split-a")
+            }
+        }
+    }
+
     func testTextValidationAllowsQuotesAndUnicodeButRejectsTerminalControls() throws {
         XCTAssertNoThrow(try TerminalBridge.validate("한글 \"quotes\" 'test' $(literal) \\n\n둘째\t열"))
         for text in ["", " \n ", "\u{1b}[A", "\u{0}", "\u{7f}", String(repeating: "a", count: 262_145)] {

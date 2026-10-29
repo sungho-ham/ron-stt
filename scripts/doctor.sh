@@ -1,13 +1,13 @@
 #!/bin/bash
 set -euo pipefail
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-APP="${1:-$HOME/Applications/Whisper Paste.app}"
+APP="${1:-$HOME/Applications/ron.app}"
 MODEL_DIR="$HOME/Library/Application Support/WhisperPaste/models"
 failed=0
 check() { if "$@"; then echo '  OK'; else echo '  FAILED'; failed=1; fi; }
 echo "macOS $(sw_vers -productVersion), $(uname -m)"
 echo "App: $APP"
-check test -x "$APP/Contents/MacOS/WhisperPaste"
+check test -x "$APP/Contents/MacOS/ron"
 check codesign --verify --deep --strict "$APP"
 echo 'Embedded whisper.cpp:'
 check test -x "$APP/Contents/Resources/bin/whisper-cli"

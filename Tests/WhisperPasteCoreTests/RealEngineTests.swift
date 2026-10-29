@@ -19,7 +19,7 @@ final class RealEngineTests: XCTestCase {
         XCTAssertGreaterThan(samples.count, 60 * AudioData.sampleRate)
         let home = FileManager.default.homeDirectoryForCurrentUser
         let binaries = ProcessInfo.processInfo.environment["WHISPER_PASTE_TEST_BIN_DIR"].map { URL(fileURLWithPath: $0) }
-            ?? home.appendingPathComponent("Applications/Whisper Paste.app/Contents/Resources/bin")
+            ?? home.appendingPathComponent("Applications/ron.app/Contents/Resources/bin")
         let resident = ResidentTranscriber()
         defer { resident.shutdown() }
         for model in ["small", "medium"] {
@@ -36,10 +36,8 @@ final class RealEngineTests: XCTestCase {
                     var resultText = ""
                     if request.hasSignal {
                         let done = expectation(description: "cumulative \(model) at \(limit / 16_000)s")
-                        let started = Date()
                         resident.transcribe(samples: Array(available[request.range]), configuration: config) { result in
                             do { resultText = try result.get() } catch { XCTFail("\(error)") }
-                            print("CUMULATIVE \(model) range=\(request.range) seals=\(request.sealsChunk) inference=\(-started.timeIntervalSinceNow)s")
                             done.fulfill()
                         }
                         wait(for: [done], timeout: 60)
@@ -64,7 +62,7 @@ final class RealEngineTests: XCTestCase {
         }
     }
 
-    func testResidentAccuracyCancellationAndWarmLatencyAgainstCLI() throws {
+    func testResidentAccuracyCancellationAndReuseAgainstCLI() throws {
         guard let fixture = ProcessInfo.processInfo.environment["WHISPER_PASTE_TEST_WAV"] else {
             throw XCTSkip("Run scripts/smoke-test.sh for real-model integration testing.")
         }
@@ -79,7 +77,7 @@ final class RealEngineTests: XCTestCase {
         XCTAssertTrue(AudioData.hasSignal(samples))
         let home = FileManager.default.homeDirectoryForCurrentUser
         let binaries = ProcessInfo.processInfo.environment["WHISPER_PASTE_TEST_BIN_DIR"].map { URL(fileURLWithPath: $0) }
-            ?? home.appendingPathComponent("Applications/Whisper Paste.app/Contents/Resources/bin")
+            ?? home.appendingPathComponent("Applications/ron.app/Contents/Resources/bin")
         let binary = binaries.appendingPathComponent("whisper-cli")
         let residentBinary = binaries.appendingPathComponent("whisper-worker")
         let engine = Transcriber(), resident = ResidentTranscriber()
@@ -89,17 +87,14 @@ final class RealEngineTests: XCTestCase {
                 model: home.appendingPathComponent("Library/Application Support/WhisperPaste/models/ggml-\(model).bin"),
                 language: "ko")
             let persistent = TranscriptionConfiguration(executable: residentBinary, model: config.model, language: "ko")
-            var baseline = "", baselineTimes: [Double] = [], warmTimes: [Double] = []
-            for _ in 0..<3 {
-                let done = expectation(description: "CLI \(model)")
-                let start = Date()
-                engine.transcribe(samples: samples, configuration: config) { result in
-                    do { baseline = try result.get(); baselineTimes.append(-start.timeIntervalSinceNow) }
-                    catch { XCTFail("\(model): \(error)") }
-                    done.fulfill()
-                }
-                wait(for: [done], timeout: 60)
+            var baseline = ""
+            let cliDone = expectation(description: "CLI \(model)")
+            engine.transcribe(samples: samples, configuration: config) { result in
+                do { baseline = try result.get() }
+                catch { XCTFail("\(model): \(error)") }
+                cliDone.fulfill()
             }
+            wait(for: [cliDone], timeout: 60)
             XCTAssertTrue(baseline.contains("회의"), baseline)
             XCTAssertTrue(baseline.contains("담당자"), baseline)
             let ready = expectation(description: "prepare \(model)")
@@ -113,20 +108,15 @@ final class RealEngineTests: XCTestCase {
             wait(for: [preview], timeout: 60)
             for _ in 0..<3 {
                 let done = expectation(description: "resident \(model)")
-                let start = Date()
                 resident.transcribe(samples: samples, configuration: persistent) { result in
                     do {
                         let text = try result.get()
                         XCTAssertEqual(text, baseline, "Resident decoding must match fresh CLI decoding")
-                        warmTimes.append(-start.timeIntervalSinceNow)
                     } catch { XCTFail("\(model): \(error)") }
                     done.fulfill()
                 }
                 wait(for: [done], timeout: 60)
             }
-            let cliMedian = baselineTimes.sorted().dropFirst().first ?? .nan
-            let warmMedian = warmTimes.sorted().dropFirst().first ?? .nan
-            print("BENCHMARK \(model) CLI median=\(cliMedian)s, resident median=\(warmMedian)s. TEXT: \(baseline)")
             let cancelled = expectation(description: "cancel actual inference")
             let longAudio = Array(repeating: samples, count: 6).flatMap { $0 }
             resident.transcribe(samples: longAudio, configuration: persistent) { result in

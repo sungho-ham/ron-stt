@@ -75,11 +75,11 @@ final class LocalizationTests: XCTestCase {
     func testInstalledAppLoadsItsOwnResourcesWithoutTheBuildCheckout() throws {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent("whisper-paste-localization-\(UUID())")
         defer { try? FileManager.default.removeItem(at: directory) }
-        let app = directory.appendingPathComponent("Whisper Paste.app")
+        let app = directory.appendingPathComponent("ron.app")
         let resources = app.appendingPathComponent("Contents/Resources")
         try FileManager.default.createDirectory(at: resources, withIntermediateDirectories: true)
         let info: [String: String] = ["CFBundleIdentifier": "test.whisper-paste.localization",
-                                     "CFBundleExecutable": "WhisperPaste", "CFBundlePackageType": "APPL"]
+                                     "CFBundleExecutable": "ron", "CFBundlePackageType": "APPL"]
         try PropertyListSerialization.data(fromPropertyList: info, format: .xml, options: 0)
             .write(to: app.appendingPathComponent("Contents/Info.plist"))
         let packaged = resources.appendingPathComponent("WhisperPaste_WhisperPasteCore.bundle", isDirectory: true)
