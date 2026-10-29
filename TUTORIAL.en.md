@@ -118,7 +118,7 @@ Clipboard paste activates the target app and moves focus. Direct input does not 
 
 Since 0.5.1, sending through clipboard paste does not hide the preview window. Clicking the preview focuses Whisper Paste like a normal window; sending activates the destination app and transfers keyboard focus. With the pin enabled, the preview stays on top. With it disabled, another window may cover the preview, but sending does not hide or close it. This removes hide/show flicker, and a window you closed yourself is not reopened after a successful send.
 
-After a successful send, the result remains in the app for copying, but repeated sends of the same result are blocked. Editing sends **the entire edited text** again; it does not automatically replace text already inserted. Use a new recording for a new sentence. While waiting, “취소 / 비우기” (Cancel / Clear) cancels the pending send. Once the actual input command is being sent, it cannot be canceled.
+After a successful send, the result remains in the app for copying, but repeated sends of the same result are blocked. Editing sends **the entire edited text** again; it does not automatically replace text already inserted. Use a new recording for a new sentence. While a send is pending, “취소” (Cancel) cancels it. Once the actual input command is being sent, it cannot be canceled.
 
 Input follows the CLI's current cursor and selection, so text is not always appended at the end. The app does not determine whether the destination tab is waiting for a Codex prompt. If a shell, another program, or an approval screen is receiving input, text goes there. Multiline paste follows the receiving program's paste handling and the terminal's confirmation settings. The implementation targets the scripting interfaces of Ghostty 1.3.1 and iTerm2 3.6.9.
 
@@ -133,7 +133,7 @@ Input follows the CLI's current cursor and selection, so text is not always appe
 - Stopping cancels any running preview and transcribes **the full recording** again. It does not simply join provisional segments that may have missing or duplicate words at their boundaries.
 - The Small/Medium models and final decoding settings remain unchanged. Preview text is not used as the final transcription's prompt. Short early previews and words at segment boundaries can be unstable, but the final result is recomputed from the complete original audio.
 - Recording is limited to five minutes. Reaching the limit automatically stops recording and starts full transcription.
-- Closing the window or clicking “취소 / 비우기” (Cancel / Clear) cancels recording and active transcription and clears the result.
+- Closing the window or clicking “취소” (Cancel) cancels recording and active transcription and clears the result. When idle or after transcription finishes, the same button reads “지우기” (Clear) and clears the text.
 - Starting a new recording with an unsent result asks whether to discard it first. Already-sent results are cleared immediately when a new recording starts.
 - The send shortcut also works during recording or final transcription. Only the final result is sent. Text cannot be edited during recording; edit it after transcription finishes.
 - Almost-silent or very short input skips transcription. This is a simple audio-level check, not full voice activity detection (VAD). Background noise can still produce incorrect text, so review the result.

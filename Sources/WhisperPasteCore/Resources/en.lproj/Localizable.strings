@@ -3,7 +3,8 @@
 "보내기" = "Send";
 "종료 후 보내기" = "Stop and Send";
 "복사" = "Copy";
-"취소 / 비우기" = "Cancel / Clear";
+"취소" = "Cancel";
+"지우기" = "Clear";
 "⌃⌥Space  시작 / 종료    ·    ⌃⌥Return  보내기" = "⌃⌥Space  Start / Stop    ·    ⌃⌥Return  Send";
 "항상 위에 표시" = "Always on Top";
 "항상 위에 표시 끄기" = "Turn off Always on Top";

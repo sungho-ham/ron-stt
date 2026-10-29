@@ -248,7 +248,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
     private func applyInterfaceLanguage() {
         hint.stringValue = AppText("⌃⌥Space  시작 / 종료    ·    ⌃⌥Return  보내기").text
         copyButton.title = AppText("복사").text
-        cancelButton.title = AppText("취소 / 비우기").text
         pinButton.setAccessibilityLabel(AppText("항상 위에 표시").text)
         applyAlwaysOnTop()
         refreshControls()
@@ -527,6 +526,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         pasteButton.title = (phase == .recording ? AppText("종료 후 보내기") : AppText("보내기")).text
         pasteButton.isEnabled = canSend
         copyButton.isEnabled = phase == .ready
+        cancelButton.title = (busy ? AppText("취소") : AppText("지우기")).text
+        cancelButton.isEnabled = phase != .pasting
         textView.isEditable = phase == .ready && !delivery.isPending
         if delivery.isPending, let destination = sendingDestination {
             destinationLabel.stringValue = AppText("전송 대상 확정 · {0}\n{1} · {2}", .literal(destination.appName), .literal(destination.displayWindowTitle), .literal(destination.displayInputTitle)).text
