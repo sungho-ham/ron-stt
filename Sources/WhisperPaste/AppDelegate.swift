@@ -51,7 +51,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
     private let copyButton = NSButton(title: "", target: nil, action: nil)
     private let destinationLabel = NSTextField(labelWithString: "")
     private let pinButton = NSButton()
-    private let heading = NSTextField(labelWithString: "")
     private let hint = NSTextField(wrappingLabelWithString: "")
     private lazy var cancelButton = NSButton(title: "", target: self, action: #selector(discard))
     private var actionGroups: NSStackView?
@@ -152,15 +151,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         panel.collectionBehavior = [.moveToActiveSpace, .fullScreenAuxiliary]
         panel.center()
         guard let content = panel.contentView else { return }
-        heading.font = .systemFont(ofSize: 20, weight: .semibold)
-        heading.lineBreakMode = .byTruncatingTail
-        heading.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         pinButton.setButtonType(.toggle)
         pinButton.isBordered = false
         pinButton.imagePosition = .imageOnly
         pinButton.imageScaling = .scaleProportionallyDown
         pinButton.target = self; pinButton.action = #selector(toggleAlwaysOnTop)
-        let header = NSStackView(views: [heading, NSView(), pinButton])
+        let header = NSStackView(views: [hint, pinButton])
         header.orientation = .horizontal; header.alignment = .centerY; header.spacing = 8
         hint.textColor = .secondaryLabelColor
         hint.maximumNumberOfLines = 2
@@ -201,7 +197,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         let buttons = NSStackView(views: [primaryActions, secondaryActions])
         buttons.orientation = .horizontal; buttons.spacing = 10; buttons.alignment = .centerY
         actionGroups = buttons
-        let stack = NSStackView(views: [header, hint, destinationLabel, statusLabel, scroll, buttons])
+        let stack = NSStackView(views: [header, destinationLabel, statusLabel, scroll, buttons])
         stack.orientation = .vertical; stack.alignment = .leading; stack.spacing = 12
         stack.translatesAutoresizingMaskIntoConstraints = false
         content.addSubview(stack)
@@ -211,7 +207,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
             stack.topAnchor.constraint(equalTo: content.topAnchor, constant: 20),
             stack.bottomAnchor.constraint(equalTo: content.bottomAnchor, constant: -20),
             header.widthAnchor.constraint(equalTo: stack.widthAnchor),
-            hint.widthAnchor.constraint(equalTo: stack.widthAnchor),
+            hint.widthAnchor.constraint(equalTo: header.widthAnchor, constant: -36),
             pinButton.widthAnchor.constraint(equalToConstant: 28),
             pinButton.heightAnchor.constraint(equalToConstant: 28),
             scroll.widthAnchor.constraint(equalTo: stack.widthAnchor),
@@ -250,8 +246,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
     }
 
     private func applyInterfaceLanguage() {
-        heading.stringValue = AppText("말하고, 확인하고, 붙여넣기").text
-        hint.stringValue = AppText("⌃⌥Space  녹음 / 종료    ·    ⌃⌥Return  입력 대상에 보내기").text
+        hint.stringValue = AppText("⌃⌥Space  시작 / 종료    ·    ⌃⌥Return  보내기").text
         copyButton.title = AppText("복사").text
         cancelButton.title = AppText("취소 / 비우기").text
         pinButton.setAccessibilityLabel(AppText("항상 위에 표시").text)
@@ -261,11 +256,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
 
     func menuNeedsUpdate(_ menu: NSMenu) {
         menu.removeAllItems()
-        add(menu, phase == .recording ? "녹음 종료  ⌃⌥Space" : "녹음 시작  ⌃⌥Space",
+        add(menu, phase == .recording ? "종료  ⌃⌥Space" : "시작  ⌃⌥Space",
             #selector(toggleRecording), enabled: !busy || phase == .recording)
         add(menu, "미리보기 열기", #selector(showPreview))
         add(menu, "항상 위에 표시", #selector(toggleAlwaysOnTop)).state = alwaysOnTop ? .on : .off
-        add(menu, "입력 대상에 보내기  ⌃⌥Return", #selector(pasteResult), enabled: canSend)
+        add(menu, "보내기  ⌃⌥Return", #selector(pasteResult), enabled: canSend)
         menu.addItem(.separator())
         let modelMenu = NSMenu()
         for value in ["small", "medium"] {
@@ -527,9 +522,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
 
     private func refreshControls() {
         refreshStatus()
-        recordButton.title = (phase == .recording ? AppText("녹음 종료") : AppText("녹음 시작")).text
+        recordButton.title = (phase == .recording ? AppText("종료") : AppText("시작")).text
         recordButton.isEnabled = !busy || phase == .recording
-        pasteButton.title = (phase == .recording ? AppText("녹음 종료 후 보내기") : AppText("입력 대상에 보내기")).text
+        pasteButton.title = (phase == .recording ? AppText("종료 후 보내기") : AppText("보내기")).text
         pasteButton.isEnabled = canSend
         copyButton.isEnabled = phase == .ready
         textView.isEditable = phase == .ready && !delivery.isPending

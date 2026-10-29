@@ -89,6 +89,6 @@ final class LocalizationTests: XCTestCase {
         XCTAssertEqual(loaded.bundleURL, packaged)
         let path = try XCTUnwrap(loaded.path(forResource: "en", ofType: "lproj"))
         let english = try XCTUnwrap(Bundle(path: path))
-        XCTAssertEqual(english.localizedString(forKey: "녹음 시작", value: nil, table: nil), "Start Recording")
+        XCTAssertEqual(english.localizedString(forKey: "시작", value: nil, table: nil), "Start")
     }
 }

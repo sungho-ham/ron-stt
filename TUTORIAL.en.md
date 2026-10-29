@@ -83,7 +83,7 @@ Drag the window's edge or corner to resize it down to **360 pt wide**. The previ
 4. The first preview transcription starts after about 1.5 seconds of audio. Later jobs start at least one second apart, and only after the previous job finishes. Actual inference time adds to the delay before text appears. The model is prepared when the app launches; the first result can take longer if preparation is still in progress.
 5. Press **`⌃⌥Space`** again to stop recording.
 6. By default, the final result is **copied automatically** after transcription. When “자동 복사 완료” (Automatic copy complete) appears, paste into your chosen field with `⌘V`. If you copied something else while waiting after stopping the recording, that newer content is preserved and automatic copy is skipped.
-7. You can also review and edit the preview text, then use **Control + Option + Return (`⌃⌥Return`)** or “입력 대상에 보내기” (Send to input target). If you edit after automatic copy, click “복사” (Copy) again or use this shortcut to send the edited text.
+7. You can also review and edit the preview text, then use **Control + Option + Return (`⌃⌥Return`)** or “보내기” (Send). If you edit after automatic copy, click “복사” (Copy) again or use this shortcut to send the edited text.
 8. Select the intended app's input field and press `⌃⌥Return` to send there. Clicking the send button inside Whisper Paste uses the previous external input target. Check the result and submit the prompt yourself.
 
 Line breaks inserted by the engine between segments are joined with spaces into a continuous sentence. Line breaks you add manually in the preview are preserved.
@@ -100,7 +100,7 @@ The input target automatically follows **the currently focused app, window, and 
 2. Check the app, window, and input area in Whisper Paste's **“입력 대상 · 자동 추적”** (Input target · Automatic tracking) display.
 3. Record with **⌃⌥Space**. Switching windows or tabs while recording also updates the displayed target.
 4. To send immediately, press **⌃⌥Return**. The app looks up and fixes the target at that moment, stops recording, and sends the final transcription of the full audio.
-5. To edit before sending, stop recording with **⌃⌥Space**, edit the completed text, then press **⌃⌥Return** or “입력 대상에 보내기” (Send to input target).
+5. To edit before sending, stop recording with **⌃⌥Space**, edit the completed text, then press **⌃⌥Return** or “보내기” (Send).
 6. **No Enter key is added.** Submit the prompt yourself at the destination.
 
 App switches are detected through macOS activation events. Changes to windows, tabs, splits, and general input fields within the same app are checked every 0.75 seconds, so the display may lag by that interval plus lookup time. Sending performs a fresh lookup instead of relying only on the displayed cache. Interacting with Whisper Paste preserves the previous external target. The previous input field in a general app is remembered by its Accessibility identity.
