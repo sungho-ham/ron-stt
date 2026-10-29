@@ -1,0 +1,2 @@
+"NSMicrophoneUsageDescription" = "Whisper Paste uses the microphone to transcribe speech locally on your Mac. Audio is not sent to a server.";
+"NSAppleEventsUsageDescription" = "Whisper Paste checks the focused terminal window and tab, and inserts your dictation when you use the send shortcut.";

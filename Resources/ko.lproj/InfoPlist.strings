@@ -1,0 +1,2 @@
+"NSMicrophoneUsageDescription" = "단축키로 녹음한 음성을 Mac 안에서 텍스트로 변환하기 위해 마이크를 사용합니다. 음성을 서버로 전송하지 않습니다.";
+"NSAppleEventsUsageDescription" = "포커스가 있는 터미널의 창·탭을 확인하고, 사용자가 전송 단축키를 누르면 받아쓰기 내용을 입력합니다.";

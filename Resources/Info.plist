@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+    <key>CFBundleIdentifier</key><string>io.github.sungho-ham.whisper-paste</string>
+    <key>CFBundleName</key><string>Whisper Paste</string>
+    <key>CFBundleDisplayName</key><string>Whisper Paste</string>
+    <key>CFBundleExecutable</key><string>WhisperPaste</string>
+    <key>CFBundlePackageType</key><string>APPL</string>
+    <key>CFBundleShortVersionString</key><string>0.5.1</string>
+    <key>CFBundleVersion</key><string>8</string>
+    <key>CFBundleDevelopmentRegion</key><string>ko</string>
+    <key>CFBundleLocalizations</key><array><string>ko</string><string>en</string></array>
+    <key>LSMinimumSystemVersion</key><string>13.0</string>
+    <key>LSUIElement</key><true/>
+    <key>NSHighResolutionCapable</key><true/>
+    <key>NSMicrophoneUsageDescription</key><string>단축키로 녹음한 음성을 Mac 안에서 텍스트로 변환하기 위해 마이크를 사용합니다. 음성을 서버로 전송하지 않습니다.</string>
+    <key>NSAppleEventsUsageDescription</key><string>포커스가 있는 터미널의 창·탭을 확인하고, 사용자가 전송 단축키를 누르면 받아쓰기 내용을 입력합니다.</string>
+</dict></plist>

@@ -1,0 +1,9 @@
+.build/
+.swiftpm/
+dist/
+vendor/
+.tools/
+.DS_Store
+*.wav
+*.bin
+*.partial
